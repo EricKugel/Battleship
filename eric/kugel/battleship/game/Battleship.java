@@ -1,6 +1,9 @@
+package eric.kugel.battleship.game;
 import javax.swing.*;
 
 import java.awt.*;
+
+import eric.kugel.battleship.algorithms.*;
 
 public class Battleship extends JFrame {
     public static final int GRID_SIZE = 10;
@@ -8,8 +11,12 @@ public class Battleship extends JFrame {
 
     private Square[][] grid = new Square[GRID_SIZE][GRID_SIZE];
     private Ship[] ships = new Ship[5];
+    public static final int[] SHIP_LENGTHS = {5, 4, 3, 3, 2};
 
     private JTextArea messageArea = null;
+    private int moves = 0;
+
+    private Algorithm algorithm;
 
     public Battleship() {
         setTitle("Battleship");
@@ -18,6 +25,8 @@ public class Battleship extends JFrame {
         setResizable(false);
         initGUI();
         pack();
+
+        this.algorithm = new Human(this);
     }
 
     private void initGUI() {
@@ -43,14 +52,8 @@ public class Battleship extends JFrame {
             }
         }
 
-        int[] shipLengths = {5, 4, 3, 3, 2};
         for (int i = 0; i < ships.length; i++) {
-            Ship ship = null;
-            while (ship == null) {
-                boolean x = Math.random() > .5;
-                boolean d = Math.random() > .5;
-                ship = generateShip(d, x, shipLengths[i]);
-            }
+            Ship ship = Ship.createShip(grid, SHIP_LENGTHS[i]);
             ships[i] = ship;
             boolean[][] location = ship.getLocation();
             for (int row = 0; row < GRID_SIZE; row++) {
@@ -65,61 +68,20 @@ public class Battleship extends JFrame {
         add(main);
     }
 
-    private Ship generateShip(boolean d, boolean x, int shipLength) {
-        int min = 0;
-        int max = GRID_SIZE - 1;
-        if (d) {
-            min = min + shipLength;
-        } else {
-            max = max - shipLength;
-        }
-        int startRow = (int) (Math.random() * (max - min) + min);
-        int startCol = (int) (Math.random() * GRID_SIZE);
-        if (!x) {
-            int temp = startRow;
-            startRow = startCol;
-            startCol = temp;
-        }
-
-        boolean[][] location = new boolean[GRID_SIZE][GRID_SIZE];
-        for (int j = 0; j < shipLength; j++) {
-            int row = startRow;
-            int col = startCol;
-            if (d) {
-                if (x) {
-                    row -= j;
-                } else {
-                    col -= j;
-                }
-            } else {
-                if (x) {
-                    row += j;
-                } else {
-                    col += j;
-                }
-            }
-            location[row][col] = true;
-            if (grid[row][col].getShip() != null) {
-                return null;
-            }
-        }
-
-        return new Ship(location, d, x);
-    }
-
-    public void buttonClicked(Square square) {
+    public void shoot(Square square) {
         if (!square.isMiss() && !square.isHit()) {
             square.shoot();
+            moves += 1;
         }
     }
 
-    private void log(String text) {
+    public void log(String text) {
         messageArea.append("\n" + text);
         messageArea.setCaretPosition(messageArea.getDocument().getLength());
     }
 
     public void sink(Ship ship) {
-        log("Ship of length " + ship.getLength() + " sunk");
+        algorithm.shipSunk(ship);
         boolean gameOver = true;
         for (Ship s : ships) {
             if (!s.isSunk()) {
@@ -128,8 +90,12 @@ public class Battleship extends JFrame {
             }
         }
         if (gameOver) {
-            log("Congratulations. All ships have been sunk.");
+            algorithm.gameOver(moves);
         }
+    }
+
+    public Square[][] getGrid() {
+        return grid;
     }
 
     public static void main(String[] arg0) {

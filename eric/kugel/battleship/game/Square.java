@@ -1,7 +1,7 @@
+package eric.kugel.battleship.game;
 import javax.swing.*;
 
 import java.awt.*;
-import java.awt.event.*;
 
 public class Square extends JButton {
     public static final int SIZE = Battleship.SCREEN_SIZE / Battleship.GRID_SIZE;
@@ -22,12 +22,6 @@ public class Square extends JButton {
         this.col = col;
 
         setPreferredSize(new Dimension(SIZE, SIZE));
-
-        addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                clicked();
-            }
-        });
     }
 
     public void paintComponent(Graphics g) {
@@ -49,10 +43,6 @@ public class Square extends JButton {
             g.setColor(Color.RED);
             g.fillArc(SIZE / 4, SIZE / 4, SIZE / 2, SIZE / 2, 0, 360);
         }
-    }
-
-    private void clicked() {
-        battleship.buttonClicked(this);
     }
 
     public void shoot() {
