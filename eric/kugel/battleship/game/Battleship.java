@@ -2,6 +2,7 @@ package eric.kugel.battleship.game;
 import javax.swing.*;
 
 import java.awt.*;
+import java.awt.event.*;
 
 import eric.kugel.battleship.algorithms.*;
 
@@ -26,7 +27,14 @@ public class Battleship extends JFrame {
         initGUI();
         pack();
 
-        this.algorithm = new Human(this);
+        this.algorithm = new Standard(this);
+
+        Timer timer = new Timer(1000 / 6, new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                algorithm.shoot();
+            }
+        });
+        timer.start();
     }
 
     private void initGUI() {
