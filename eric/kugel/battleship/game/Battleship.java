@@ -10,6 +10,11 @@ public class Battleship extends JFrame {
     public static final int GRID_SIZE = 10;
     public static final int SCREEN_SIZE = 800;
 
+    public static final int RIGHT = 0;
+    public static final int UP = 1;
+    public static final int LEFT = 2;
+    public static final int DOWN = 3;
+
     private Square[][] grid = new Square[GRID_SIZE][GRID_SIZE];
     private Ship[] ships = new Ship[5];
     public static final int[] SHIP_LENGTHS = {5, 4, 3, 3, 2};

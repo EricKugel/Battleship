@@ -55,6 +55,31 @@ public class Square extends JButton {
         repaint();
     }
 
+    public Square[] getNeighbors() {
+        int neighborCount = 4;
+        if (row < 0 || row > Battleship.GRID_SIZE) {
+            neighborCount -= 1;
+        } if (col < 0 || col > Battleship.GRID_SIZE) {
+            neighborCount -= 1;
+        }
+
+        Square[] neighbors = new Square[neighborCount];
+
+        int i = 0;
+        int index = 0;
+        for (int r = -1; r <= 1; r++) {
+            for (int c = -1; c <= 1; c++) {
+                if (i % 2 == 1) {
+                    neighbors[index] = battleship.getGrid()[row + r][col + c];
+                    index += 1;
+                }
+                i++;
+            }
+        }
+        
+        return neighbors;
+    }
+
     public Ship getShip() {
         return ship;
     }
@@ -83,4 +108,6 @@ public class Square extends JButton {
     public Battleship getBattleship() {
         return battleship;
     }
+
+    
 }   
