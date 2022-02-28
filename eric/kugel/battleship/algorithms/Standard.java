@@ -17,16 +17,17 @@ public class Standard implements Algorithm {
     }
 
     public void shoot() {
-        Square targetSquare = null;
-        if (unsunkShips.size() > 0) {
-            targetSquare = target(unsunkShips.get(0));
-        } else {
-            targetSquare = random();
-        }
-
+        Square targetSquare = unsunkShips.size() > 0 ? target(unsunkShips.size() - 1) : random();
         battleship.shoot(targetSquare);
         if (targetSquare.isHit() && !targetSquare.getShip().isSunk()) {
             unsunkShips.add(targetSquare);
+        }
+
+        for (int i = 0; i < unsunkShips.size(); i++) {
+            if (unsunkShips.get(i).getShip().isSunk()) {
+                unsunkShips.remove(i);
+                i -= 1;
+            }
         }
     }
 
@@ -44,41 +45,28 @@ public class Standard implements Algorithm {
     private Square target(int unsunkShipIndex) {
         Square[][] grid = battleship.getGrid();
         Square square = unsunkShips.get(unsunkShipIndex);
-        int row = square.getRow();
-        int col = square.getCol();
 
-        // hacky code warning
-        int i = 0;
-        for (int r = -1; r <= 1; r++) {
-            for (int c = -1; c <= 1; c++) {
-                if (i % 2 == 1) {
-                    if (row + r > -1 && row + r < grid.length && col + c > -1 && col + c < grid[0].length) {
-                        Square check = grid[row + r][col + c];
-                        // look on other side (make a straight line)
-                        
+        for (Square check : square.getNeighbors()) {
+            if (check.isHit()) {
+                int oppositeRow = check.getRow() != square.getRow() ? square.getRow() - (check.getRow() - square.getRow()) : square.getRow();
+                int oppositeCol = check.getCol() != square.getCol() ? square.getCol() - (check.getCol() - square.getCol()) : square.getCol();
+                if (oppositeRow >= 0 && oppositeRow < Battleship.GRID_SIZE && oppositeCol >= 0 && oppositeCol < Battleship.GRID_SIZE) {
+                    Square opposite = grid[oppositeRow][oppositeCol];
+                    if (!opposite.isHit() && !opposite.isMiss()) {
+                        return opposite;
                     }
                 }
-                i++;
             }
         }
 
         for (Square check : square.getNeighbors()) {
-            if (check.isHit()) {
-                Square opposite = null;
-                if (r == 0) {
-                    opposite = grid[row][col + (c * -1)];
-                } else {
-                    opposite = grid[row + (r * -1)][col];
-                }
-                
-                if (!opposite.isHit() && !opposite.isMiss()) {
-                    return opposite;
-                }
+            if (!check.isMiss() && !check.isHit()) {
+                return check;
             }
         }
         
-        if (unsunkShipIndex < unsunkShips.size() - 1) {
-            return target(unsunkShipIndex + 1);
+        if (unsunkShipIndex > 0) {
+            return target(unsunkShipIndex - 1);
         } else {
             return random();
         }

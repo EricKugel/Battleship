@@ -70,8 +70,10 @@ public class Square extends JButton {
         for (int r = -1; r <= 1; r++) {
             for (int c = -1; c <= 1; c++) {
                 if (i % 2 == 1) {
-                    neighbors[index] = battleship.getGrid()[row + r][col + c];
-                    index += 1;
+                    if (row + r > -1 && row + r < Battleship.GRID_SIZE && col + c > -1 && col + c < Battleship.GRID_SIZE) {
+                        neighbors[index] = battleship.getGrid()[row + r][col + c];
+                        index += 1;
+                    }
                 }
                 i++;
             }
