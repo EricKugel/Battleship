@@ -1,19 +1,19 @@
 package eric.kugel.battleship.algorithms;
 
-import eric.kugel.battleship.game.*;
-
 import java.awt.event.*;
 
-public class Human implements Algorithm {
-    private Battleship battleship = null;
+import eric.kugel.battleship.logic.*;
 
-    public Human(Battleship battleship) {
+public class Human implements Algorithm {
+    private Board battleship = null;
+
+    public Human(Board battleship) {
         this.battleship = battleship;
-        for (Square[] row : battleship.getGrid()) {
-            for (Square square : row) {
-                square.addActionListener(new ActionListener() {
+        for (Cell[] row : battleship.getGrid()) {
+            for (Cell cell : row) {
+                cell.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
-                        battleship.shoot(square);
+                        battleship.shoot(cell);
                     }
                 });
             }
