@@ -1,4 +1,4 @@
-package eric.kugel.battleship.logic;
+package eric.kugel.battleship.game;
 import java.util.ArrayList;
 
 public class Ship {
@@ -6,9 +6,9 @@ public class Ship {
     private boolean d;
     private boolean x;
     private boolean sunk = false;
-    public static int GRID_SIZE = Board.GRID_SIZE;
+    public static int GRID_SIZE = Battleship.GRID_SIZE;
 
-    private ArrayList<Cell> squares = new ArrayList<Cell>();
+    private ArrayList<Square> squares = new ArrayList<Square>();
 
     public Ship(boolean[][] location, boolean d, boolean x) {
         this.location = location;
@@ -18,7 +18,7 @@ public class Ship {
 
     public void hit() {
         boolean sunk = true;
-        for (Cell square : squares) {
+        for (Square square : squares) {
             if (!square.isHit()) {
                 sunk = false;
                 break;
@@ -32,13 +32,20 @@ public class Ship {
     private void sink() {
         this.sunk = true;
         squares.get(0).getBattleship().sink(this);
+        repaint();
+    }
+
+    private void repaint() {
+        for (Square square : squares) {
+            square.repaint();
+        }
     }
 
     public int getLength() {
         return squares.size();
     }
 
-    public void addSquare(Cell square) {
+    public void addSquare(Square square) {
         squares.add(square);
     }
 
@@ -58,7 +65,7 @@ public class Ship {
         return sunk;
     }
 
-    public static Ship createShip(Cell[][] grid, int shipLength) {
+    public static Ship createShip(Square[][] grid, int shipLength) {
         Ship ship = null;
         while (ship == null) {
             boolean x = Math.random() > .5;
@@ -68,7 +75,7 @@ public class Ship {
         return ship;
     }
 
-    private static Ship generateShip(boolean d, boolean x, int shipLength, Cell[][] grid) {
+    private static Ship generateShip(boolean d, boolean x, int shipLength, Square[][] grid) {
         int min = 0;
         int max = GRID_SIZE - 1;
         if (d) {

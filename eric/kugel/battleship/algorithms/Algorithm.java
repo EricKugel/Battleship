@@ -1,6 +1,6 @@
 package eric.kugel.battleship.algorithms;
 
-import eric.kugel.battleship.logic.*;
+import eric.kugel.battleship.game.*;
 
 public interface Algorithm {
     public void shoot();
