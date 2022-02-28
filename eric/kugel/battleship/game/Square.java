@@ -57,9 +57,9 @@ public class Square extends JButton {
 
     public Square[] getNeighbors() {
         int neighborCount = 4;
-        if (row < 0 || row > Battleship.GRID_SIZE) {
+        if (row == 0 || row == Battleship.GRID_SIZE - 1) {
             neighborCount -= 1;
-        } if (col < 0 || col > Battleship.GRID_SIZE) {
+        } if (col == 0 || col == Battleship.GRID_SIZE - 1) {
             neighborCount -= 1;
         }
 

@@ -8,8 +8,6 @@ import eric.kugel.battleship.game.*;
 public class Standard implements Algorithm {
     private Battleship battleship;
 
-    private Square lastHit = null;
-
     private ArrayList<Square> unsunkShips = new ArrayList<Square>();
 
     public Standard(Battleship battleship) {
@@ -45,7 +43,7 @@ public class Standard implements Algorithm {
     private Square target(int unsunkShipIndex) {
         Square[][] grid = battleship.getGrid();
         Square square = unsunkShips.get(unsunkShipIndex);
-
+        
         for (Square check : square.getNeighbors()) {
             if (check.isHit()) {
                 int oppositeRow = check.getRow() != square.getRow() ? square.getRow() - (check.getRow() - square.getRow()) : square.getRow();
