@@ -23,6 +23,7 @@ public class Battleship extends JFrame {
     private int moves = 0;
 
     private Algorithm algorithm;
+    private Timer timer;
 
     public Battleship() {
         setTitle("Battleship");
@@ -34,7 +35,7 @@ public class Battleship extends JFrame {
 
         this.algorithm = new Standard(this);
 
-        Timer timer = new Timer(1000 / 6, new ActionListener() {
+        timer = new Timer(1000 / 3, new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 algorithm.shoot();
             }
@@ -104,6 +105,7 @@ public class Battleship extends JFrame {
         }
         if (gameOver) {
             algorithm.gameOver(moves);
+            timer.stop();
         }
     }
 
